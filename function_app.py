@@ -1,14 +1,23 @@
 import azure.functions as func
 import logging
-from microservice import numerical_integration
-import json
 import math
+import json
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
+# Numerical integration function
+def numerical_integration(func, lower, upper, n):
+    dx = (upper - lower) / n
+    total_area = 0
+    for i in range(n):
+        x = lower + i * dx
+        total_area += func(x) * dx
+    return total_area
+
+# Numerical integration service route
 @app.route(route="numericalintegralservice")
-def http_example(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+def numerical_integration_service(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Numerical integration service request received.')
 
     # Extract 'lower' and 'upper' from query parameters
     try:
